@@ -10,6 +10,7 @@
         <a class="article-card__media" href="{{ $page.RelPermalink }}" tabindex="-1" aria-hidden="true">
             <img
                 src="{{ . }}"
+                {{ with $cover.srcset }}srcset="{{ . }}" sizes="(max-width: 760px) calc(100vw - 40px), (max-width: 1040px) 46vw, 580px"{{ end }}
                 alt=""
                 {{ with $cover.width }}width="{{ . }}"{{ end }}
                 {{ with $cover.height }}height="{{ . }}"{{ end }}

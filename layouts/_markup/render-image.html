@@ -3,18 +3,36 @@
 {{- $lookup := path.Base $destination -}}
 {{- $resource := $page.Resources.GetMatch $lookup -}}
 {{- $src := $destination -}}
+{{- $srcset := "" -}}
 {{- $width := "" -}}
 {{- $height := "" -}}
 {{- with $resource -}}
     {{- $src = .RelPermalink -}}
     {{- if reflect.IsImageResourceProcessable . -}}
-        {{- $processed := .Fit "1400x1100" -}}
+        {{- $processed := .Fit "1400x1100 webp q82" -}}
         {{- $src = $processed.RelPermalink -}}
         {{- $width = $processed.Width -}}
         {{- $height = $processed.Height -}}
+        {{- $srcsetParts := slice -}}
+        {{- range $candidateWidth := slice 480 760 1100 -}}
+            {{- if le $candidateWidth $processed.Width -}}
+                {{- $variant := $processed.Resize (printf "%dx webp q80" $candidateWidth) -}}
+                {{- $srcsetParts = $srcsetParts | append (printf "%s %dw" $variant.RelPermalink $variant.Width) -}}
+            {{- end -}}
+        {{- end -}}
+        {{- $srcsetParts = $srcsetParts | append (printf "%s %dw" $processed.RelPermalink $processed.Width) | uniq -}}
+        {{- $srcset = delimit $srcsetParts ", " -}}
     {{- end -}}
 {{- end -}}
 <figure>
-    <img src="{{ $src | safeURL }}" alt="{{ .Text }}" {{ with $width }}width="{{ . }}"{{ end }} {{ with $height }}height="{{ . }}"{{ end }} loading="lazy" decoding="async">
+    <img
+        src="{{ $src | safeURL }}"
+        {{ with $srcset }}srcset="{{ . }}" sizes="(max-width: 840px) calc(100vw - 40px), 760px"{{ end }}
+        alt="{{ .Text }}"
+        {{ with $width }}width="{{ . }}"{{ end }}
+        {{ with $height }}height="{{ . }}"{{ end }}
+        loading="lazy"
+        decoding="async"
+    >
     {{ with .Title }}<figcaption>{{ . }}</figcaption>{{ end }}
 </figure>

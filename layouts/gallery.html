@@ -21,6 +21,7 @@
             "page" $itemPage
             "thumb" $image.thumb
             "full" $image.full
+            "srcset" $image.srcset
             "width" $image.width
             "height" $image.height
             "date" ($itemPage.Date.Format "2006.01.02")
@@ -67,6 +68,7 @@
                     <figure>
                         <img
                             src="{{ $item.thumb }}"
+                            {{ with $item.srcset }}srcset="{{ . }}" sizes="(max-width: 560px) calc(100vw - 40px), (max-width: 760px) 48vw, 30vw"{{ end }}
                             alt="{{ $item.page.Title }}"
                             {{ with $item.width }}width="{{ . }}"{{ end }}
                             {{ with $item.height }}height="{{ . }}"{{ end }}

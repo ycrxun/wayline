@@ -26,9 +26,9 @@
     --radius-sm: 8px;
     --radius-md: 14px;
     --radius-lg: 22px;
-    --font-sans: "Space Grotesk", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-    --font-display: "Space Grotesk", "LXGW WenKai", "Kaiti SC", STKaiti, serif;
-    --font-mono: "JetBrains Mono", "Noto Sans SC", SFMono-Regular, Menlo, Consolas, monospace;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    --font-display: "LXGW WenKai", "SF Pro Rounded", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     --container: 1280px;
     --gutter: clamp(20px, 4vw, 58px);
     --header-height: 76px;

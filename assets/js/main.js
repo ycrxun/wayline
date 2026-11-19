@@ -486,8 +486,5 @@
             openSearch();
         });
 
-        if ("requestIdleCallback" in window) {
-            requestIdleCallback(() => dialogSearch.loadIndex());
-        }
     }
 })();

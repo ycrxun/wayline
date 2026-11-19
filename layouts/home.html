@@ -43,7 +43,16 @@
     <article class="featured-card" data-reveal>
         <a class="featured-card__visual" href="{{ .RelPermalink }}" aria-label="阅读：{{ .Title }}">
             {{ with $featuredCover.url }}
-                <img src="{{ . }}" alt="{{ $featuredCover.alt }}" {{ with $featuredCover.width }}width="{{ . }}"{{ end }} {{ with $featuredCover.height }}height="{{ . }}"{{ end }} loading="eager">
+                <img
+                    src="{{ . }}"
+                    {{ with $featuredCover.srcset }}srcset="{{ . }}" sizes="(max-width: 760px) 100vw, (max-width: 1040px) 58vw, 760px"{{ end }}
+                    alt="{{ $featuredCover.alt }}"
+                    {{ with $featuredCover.width }}width="{{ . }}"{{ end }}
+                    {{ with $featuredCover.height }}height="{{ . }}"{{ end }}
+                    loading="eager"
+                    fetchpriority="high"
+                    decoding="async"
+                >
             {{ else }}
                 <span class="featured-card__signal" aria-hidden="true"></span>
             {{ end }}

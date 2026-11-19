@@ -25,10 +25,6 @@
 <meta name="description" content="{{ $description }}">
 {{ with .Site.Params.keywords }}<meta name="keywords" content="{{ delimit . ", " }}">{{ end }}
 <link rel="canonical" href="{{ .Permalink }}">
-<link rel="preload" href="/fonts/space-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/noto-sans-sc-regular.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/lxgw-wenkai-medium.woff2" as="font" type="font/woff2" crossorigin>
-
 <script>
     (() => {
         const saved = localStorage.getItem("wayline-theme");
@@ -44,7 +40,7 @@
 </script>
 
 {{ $css := resources.Get "css/main.css" | minify | fingerprint }}
-<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+<style>{{ $css.Content | safeCSS }}</style>
 {{ with resources.Get "favicon.ico" }}
     <link rel="icon" href="{{ .RelPermalink }}">
 {{ end }}

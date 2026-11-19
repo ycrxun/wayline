@@ -5,21 +5,31 @@
     {{- with $page.Resources.GetMatch $path -}}
         {{- $resource := . -}}
         {{- $url := $resource.RelPermalink -}}
+        {{- $srcset := "" -}}
         {{- $width := "" -}}
         {{- $height := "" -}}
         {{- if reflect.IsImageResourceProcessable $resource -}}
-            {{- $processed := $resource.Fit "1200x800" -}}
+            {{- $processed := $resource.Fit "1200x800 webp q82" -}}
             {{- $url = $processed.RelPermalink -}}
             {{- $width = $processed.Width -}}
             {{- $height = $processed.Height -}}
+            {{- $srcsetParts := slice -}}
+            {{- range $targetWidth := slice 480 720 960 -}}
+                {{- if le $targetWidth $processed.Width -}}
+                    {{- $variant := $processed.Resize (printf "%dx webp q80" $targetWidth) -}}
+                    {{- $srcsetParts = $srcsetParts | append (printf "%s %dw" $variant.RelPermalink $variant.Width) -}}
+                {{- end -}}
+            {{- end -}}
+            {{- $srcsetParts = $srcsetParts | append (printf "%s %dw" $processed.RelPermalink $processed.Width) | uniq -}}
+            {{- $srcset = delimit $srcsetParts ", " -}}
         {{- end -}}
-        {{- $cover = dict "url" $url "width" $width "height" $height "alt" ($page.Title) -}}
+        {{- $cover = dict "url" $url "srcset" $srcset "width" $width "height" $height "alt" $page.Title -}}
     {{- else -}}
         {{- $url := $path -}}
         {{- if not (or (hasPrefix $path "http://") (hasPrefix $path "https://") (hasPrefix $path "/")) -}}
-            {{- $url = $path | relURL -}}
+            {{- $url = $url | relURL -}}
         {{- end -}}
-        {{- $cover = dict "url" $url "alt" $page.Title -}}
+        {{- $cover = dict "url" $url "srcset" "" "alt" $page.Title -}}
     {{- end -}}
 {{- end -}}
 {{- return $cover -}}

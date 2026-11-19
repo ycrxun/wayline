@@ -6,21 +6,28 @@
         {{- $resource := . -}}
         {{- $thumb := $resource -}}
         {{- $full := $resource -}}
+        {{- $srcset := "" -}}
         {{- $width := "" -}}
         {{- $height := "" -}}
         {{- if reflect.IsImageResourceProcessable $resource -}}
-            {{- if gt $resource.Width 900 -}}
-                {{- $thumb = $resource.Resize "900x" -}}
-            {{- end -}}
-            {{- if gt $resource.Width 1600 -}}
-                {{- $full = $resource.Resize "1600x" -}}
-            {{- end -}}
+            {{- $thumb = $resource.Resize "800x webp q80" -}}
+            {{- $full = $resource.Resize "1600x webp q84" -}}
             {{- $width = $thumb.Width -}}
             {{- $height = $thumb.Height -}}
+            {{- $srcsetParts := slice -}}
+            {{- range $candidateWidth := slice 360 540 -}}
+                {{- if le $candidateWidth $resource.Width -}}
+                    {{- $variant := $resource.Resize (printf "%dx webp q78" $candidateWidth) -}}
+                    {{- $srcsetParts = $srcsetParts | append (printf "%s %dw" $variant.RelPermalink $variant.Width) -}}
+                {{- end -}}
+            {{- end -}}
+            {{- $srcsetParts = $srcsetParts | append (printf "%s %dw" $thumb.RelPermalink $thumb.Width) | uniq -}}
+            {{- $srcset = delimit $srcsetParts ", " -}}
         {{- end -}}
         {{- $image = dict
             "thumb" $thumb.RelPermalink
             "full" $full.RelPermalink
+            "srcset" $srcset
             "width" $width
             "height" $height
             "alt" $page.Title
@@ -30,7 +37,7 @@
         {{- if not (or (hasPrefix $url "http://") (hasPrefix $url "https://") (hasPrefix $url "/")) -}}
             {{- $url = $url | relURL -}}
         {{- end -}}
-        {{- $image = dict "thumb" $url "full" $url "alt" $page.Title -}}
+            {{- $image = dict "thumb" $url "full" $url "srcset" "" "alt" $page.Title -}}
     {{- end -}}
 {{- end -}}
 {{- return $image -}}

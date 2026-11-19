@@ -29,7 +29,16 @@
 
     {{ with $cover.url }}
         <figure class="post-cover section-frame">
-            <img src="{{ . }}" alt="{{ $cover.alt }}" {{ with $cover.width }}width="{{ . }}"{{ end }} {{ with $cover.height }}height="{{ . }}"{{ end }} loading="eager">
+            <img
+                src="{{ . }}"
+                {{ with $cover.srcset }}srcset="{{ . }}" sizes="(max-width: 1280px) calc(100vw - 40px), 1200px"{{ end }}
+                alt="{{ $cover.alt }}"
+                {{ with $cover.width }}width="{{ . }}"{{ end }}
+                {{ with $cover.height }}height="{{ . }}"{{ end }}
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+            >
             <figcaption><span>FIG. 01</span>{{ $.Title }}</figcaption>
         </figure>
     {{ end }}
