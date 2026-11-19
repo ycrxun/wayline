@@ -9,7 +9,8 @@ Wayline is a Hugo theme for a personal technical journal. It pairs a dark-first 
 - Responsive home, article, archive timeline, taxonomy, and 404 layouts
 - Dark, light, and warm paper reading modes with saved preferences
 - Client-side search with a keyboard-accessible modal
-- Configurable photo gallery with a full-screen lightbox
+- Configurable photo gallery with responsive masonry and lightbox navigation
+- Full-screen photo lightbox with keyboard and swipe navigation
 - Article table of contents, code copy, syntax highlighting, and Giscus comments
 - SEO metadata, Open Graph, RSS, sitemap, and structured data
 - Print-ready resume layout
@@ -46,15 +47,47 @@ params:
         enabled: true
         menuTitle: 影像
         title: 影像日志
-        source: posts
+        source: gallery
         limit: 12
 ```
 
-The gallery reads pages from the configured section and displays pages that have an `image` front matter field. Use `content/moments/` as an independent photo collection and set `gallery.source: moments` when desired.
+The gallery reads pages from the configured section and displays pages that have an `image` front matter field. By default it reads the dedicated `content/gallery/` section, so article illustrations are not mixed into the photo journal.
+
+Create one leaf bundle per photo:
+
+```text
+content/gallery/
+└── west-lake-afternoon/
+    ├── index.md
+    └── cover.jpg
+```
+
+```yaml
+---
+title: 西湖边的午后
+date: 2026-11-10
+description: 湖面、树影和一段很慢的下午。
+image: cover.jpg
+location: 杭州
+category: 旅记
+camera: X100VI
+tags: [杭州, 旅行]
+link: ""
+---
+```
+
+Each gallery entry can keep its own body copy. `link` is optional and only adds a related-page button in the lightbox.
+
+The legacy article-image aggregation mode remains available only when explicitly requested:
+
+```yaml
+gallery:
+    source: posts
+```
 
 ## Development
 
-Install Sass and rebuild the stylesheet:
+Install the build dependencies and rebuild the stylesheet:
 
 ```bash
 npm install sass

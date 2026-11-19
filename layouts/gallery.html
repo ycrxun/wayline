@@ -1,15 +1,22 @@
 {{ define "main" }}
 {{- $gallery := .Site.Params.gallery -}}
-{{- $source := $gallery.source | default "posts" -}}
+{{- $source := $gallery.source | default "gallery" -}}
 {{- $limit := $gallery.limit | default 12 -}}
 {{- $pages := where .Site.RegularPages "Section" $source -}}
 {{- $items := slice -}}
 {{- range $pages.ByDate.Reverse -}}
     {{- $itemPage := . -}}
     {{- $image := partial "gallery-image.html" $itemPage -}}
+    {{- $meta := partial "gallery-meta.html" $itemPage -}}
+    {{- $metaParts := slice ($itemPage.Date.Format "2006.01.02") -}}
+    {{- with $meta.text -}}{{- $metaParts = $metaParts | append . -}}{{- end -}}
+    {{- $link := "" -}}
+    {{- if eq $source "posts" -}}
+        {{- $link = $itemPage.RelPermalink -}}
+    {{- else -}}
+        {{- with $itemPage.Params.link -}}{{- $link = . -}}{{- end -}}
+    {{- end -}}
     {{- with $image.thumb -}}
-        {{- $category := "" -}}
-        {{- with index ($itemPage.GetTerms "categories") 0 -}}{{- $category = .LinkTitle -}}{{- end -}}
         {{- $items = $items | append (dict
             "page" $itemPage
             "thumb" $image.thumb
@@ -17,7 +24,12 @@
             "width" $image.width
             "height" $image.height
             "date" ($itemPage.Date.Format "2006.01.02")
-            "category" $category
+            "meta" (delimit $metaParts " · ")
+            "link" $link
+            "linkLabel" (cond (eq $source "posts") "阅读相关文章 ↗" "查看原始页面 ↗")
+            "credit" ($itemPage.Params.credit | default "")
+            "license" ($itemPage.Params.license | default "")
+            "licenseUrl" ($itemPage.Params.licenseUrl | default "")
         ) -}}
     {{- end -}}
 {{- end -}}
@@ -32,9 +44,9 @@
     <p class="index-hero__lead">{{ $gallery.description }}</p>
 </section>
 
-<section class="photo-gallery section-frame">
+<section class="photo-gallery section-frame" data-photo-gallery>
     {{ if $items }}
-        <div class="photo-feed">
+        <div class="photo-feed" data-gallery-grid>
             {{ range $index, $item := $items }}
                 <button
                     class="photo-card"
@@ -42,9 +54,13 @@
                     data-photo-item
                     data-photo-src="{{ $item.full }}"
                     data-photo-title="{{ $item.page.Title }}"
-                    data-photo-meta="{{ $item.date }}{{ with $item.category }} · {{ . }}{{ end }}"
+                    data-photo-meta="{{ $item.meta }}"
                     data-photo-description="{{ $item.page.Description | default ($item.page.Summary | plainify) }}"
-                    data-photo-link="{{ $item.page.RelPermalink }}"
+                    data-photo-link="{{ $item.link }}"
+                    data-photo-link-label="{{ $item.linkLabel }}"
+                    data-photo-credit="{{ $item.credit }}"
+                    data-photo-license="{{ $item.license }}"
+                    data-photo-license-url="{{ $item.licenseUrl }}"
                     data-photo-index="{{ $index }}"
                     aria-label="查看图片：{{ $item.page.Title }}"
                 >
@@ -59,7 +75,7 @@
                         >
                         <span class="photo-card__shade" aria-hidden="true"></span>
                         <figcaption>
-                            <span>{{ $item.date }}{{ with $item.category }} · {{ . }}{{ end }}</span>
+                            <span>{{ $item.meta }}</span>
                             <strong>{{ $item.page.Title }}</strong>
                         </figcaption>
                     </figure>

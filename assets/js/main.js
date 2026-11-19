@@ -219,6 +219,8 @@
         const title = photoLightbox.querySelector("[data-lightbox-title]");
         const meta = photoLightbox.querySelector("[data-lightbox-meta]");
         const description = photoLightbox.querySelector("[data-lightbox-description]");
+        const credit = photoLightbox.querySelector("[data-lightbox-credit]");
+        const license = photoLightbox.querySelector("[data-lightbox-license]");
         const link = photoLightbox.querySelector("[data-lightbox-link]");
         const counter = photoLightbox.querySelector("[data-lightbox-counter]");
         const previous = photoLightbox.querySelector("[data-lightbox-prev]");
@@ -233,8 +235,18 @@
             meta.textContent = item.dataset.photoMeta || "";
             description.textContent = item.dataset.photoDescription || "";
             description.hidden = !item.dataset.photoDescription;
+            credit.textContent = item.dataset.photoCredit
+                ? `PHOTO · ${item.dataset.photoCredit}`
+                : "";
+            credit.hidden = !item.dataset.photoCredit;
+            license.textContent = item.dataset.photoLicense || "";
+            license.href = item.dataset.photoLicenseUrl || "#";
+            license.hidden = !(item.dataset.photoLicense && item.dataset.photoLicenseUrl);
             link.href = item.dataset.photoLink || "#";
             link.hidden = !item.dataset.photoLink;
+            link.target = /^https?:\/\//.test(item.dataset.photoLink || "") ? "_blank" : "";
+            link.rel = link.target ? "noopener noreferrer" : "";
+            link.textContent = item.dataset.photoLinkLabel || "查看相关页面 ↗";
             counter.textContent = `${String(activePhoto + 1).padStart(2, "0")} / ${String(photoItems.length).padStart(2, "0")}`;
         };
 

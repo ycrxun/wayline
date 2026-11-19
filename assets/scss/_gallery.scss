@@ -266,6 +266,23 @@
         line-height: 1.6;
     }
 
+    .photo-lightbox__credit {
+        display: flex;
+        grid-column: 1 / -1;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 5px 10px;
+        color: var(--muted);
+        font-family: var(--font-mono);
+        font-size: 8px;
+        letter-spacing: 0.03em;
+
+        a {
+            color: var(--accent);
+            font-size: inherit;
+        }
+    }
+
     a {
         align-self: center;
         color: var(--action);
