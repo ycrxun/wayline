@@ -14,7 +14,7 @@ Wayline is a Hugo theme for a personal technical journal. It pairs a dark-first 
 - Article table of contents, code copy, syntax highlighting, and Giscus comments
 - SEO metadata, Open Graph, RSS, sitemap, and structured data
 - Print-ready resume layout
-- Self-hosted open-source fonts
+- Self-hosted rounded display font with lightweight system body fonts
 
 ## Requirements
 
