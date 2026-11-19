@@ -1,0 +1,31 @@
+{{ with .Site.Params.comments.giscus }}
+<section
+    class="comments"
+    id="comments"
+    data-giscus
+    data-giscus-light="light"
+    data-giscus-dark="dark_dimmed"
+>
+    <div class="comments__heading">
+        <span class="eyebrow">OPEN CHANNEL</span>
+        <h2>讨论</h2>
+        <p>留下你的问题、补充或不同意见。</p>
+    </div>
+    <script
+        src="https://giscus.app/client.js"
+        data-repo="{{ .repo }}"
+        data-repo-id="{{ .repoID }}"
+        data-category="{{ .category }}"
+        data-category-id="{{ .categoryID }}"
+        data-mapping="{{ default "title" .mapping }}"
+        data-strict="0"
+        data-reactions-enabled="{{ default 1 .reactionsEnabled }}"
+        data-emit-metadata="{{ default 0 .emitMetadata }}"
+        data-input-position="top"
+        data-theme="dark_dimmed"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async
+    ></script>
+</section>
+{{ end }}

@@ -1,0 +1,99 @@
+{{ define "main" }}
+{{- $isPost := eq .Section "posts" -}}
+{{- $cover := partial "cover.html" . -}}
+{{- $toc := .TableOfContents -}}
+
+<article class="post{{ if $cover.url }} post--with-cover{{ end }}">
+    <div class="reading-progress" aria-hidden="true"><span></span></div>
+
+    <header class="post-header section-frame">
+        {{ if $isPost }}
+            <a class="back-link" href="{{ relLangURL "posts/" }}">← 返回全部文章</a>
+        {{ else }}
+            <a class="back-link" href="{{ .Site.Home.RelPermalink }}">← 返回首页</a>
+        {{ end }}
+        <div class="post-header__meta">
+            {{ with index (.GetTerms "categories") 0 }}
+                <a class="category-link tone-{{ .Data.Term | urlize }}" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+            {{ else }}
+                <span>{{ .Section | upper }}</span>
+            {{ end }}
+            {{ if $isPost }}
+                <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ .Date.Format "2006.01.02" }}</time>
+                <span>{{ cond (lt .ReadingTime 1) 1 (math.Ceil .ReadingTime) }} MIN READ</span>
+            {{ end }}
+        </div>
+        <h1>{{ .Title }}</h1>
+        {{ with .Description }}<p class="post-header__description">{{ . }}</p>{{ end }}
+    </header>
+
+    {{ with $cover.url }}
+        <figure class="post-cover section-frame">
+            <img src="{{ . }}" alt="{{ $cover.alt }}" {{ with $cover.width }}width="{{ . }}"{{ end }} {{ with $cover.height }}height="{{ . }}"{{ end }} loading="eager">
+            <figcaption><span>FIG. 01</span>{{ $.Title }}</figcaption>
+        </figure>
+    {{ end }}
+
+    <div class="post-layout section-frame">
+        <div class="post-main">
+            <div class="prose" data-article-content>
+                {{ .Content }}
+            </div>
+
+            {{ with .GetTerms "tags" }}
+                <footer class="post-tags">
+                    <span class="mono-label">TAGGED AS</span>
+                    <div>
+                        {{ range . }}<a href="{{ .RelPermalink }}"># {{ .LinkTitle }}</a>{{ end }}
+                    </div>
+                </footer>
+            {{ end }}
+
+            {{ if and $isPost (.Site.Params.article.license.enabled) }}
+                <div class="license-note">
+                    <span class="license-note__mark">©</span>
+                    <p>{{ .Params.license | default .Site.Params.article.license.default | safeHTML }}</p>
+                </div>
+            {{ end }}
+
+            {{ if and $isPost (.Site.Params.comments.enabled) (ne .Params.comments false) }}
+                {{ partial "comments.html" . }}
+            {{ end }}
+        </div>
+
+        <aside class="post-sidebar" aria-label="文章目录">
+            <div class="post-sidebar__sticky">
+                <div class="post-sidebar__label">
+                    <span>ON THIS PAGE</span>
+                    <i></i>
+                </div>
+                {{ with $toc }}
+                    <nav class="toc" data-toc>{{ . }}</nav>
+                {{ else }}
+                    <p class="toc-empty">这篇内容较短，无需目录。</p>
+                {{ end }}
+                <a class="post-sidebar__top" href="#main-content">BACK TO TOP ↑</a>
+            </div>
+        </aside>
+    </div>
+</article>
+
+{{ if $isPost }}
+    {{ $related := .Site.RegularPages.Related . | first 3 }}
+    {{ with $related }}
+        <section class="related section-frame">
+            <div class="section-heading">
+                <div>
+                    <span class="section-index">NEXT / READING</span>
+                    <h2>继续探索</h2>
+                </div>
+            </div>
+            <div class="article-grid">
+                {{ range . }}
+                    {{ partial "article-card.html" . }}
+                {{ end }}
+            </div>
+        </section>
+    {{ end }}
+{{ end }}
+{{ end }}

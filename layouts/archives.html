@@ -1,0 +1,42 @@
+{{ define "main" }}
+{{- $pages := where .Site.RegularPages "Section" "posts" -}}
+<section class="index-hero section-frame">
+    <span class="eyebrow">TIME INDEX</span>
+    <div class="index-hero__title-row">
+        <h1>{{ .Title }}</h1>
+        <span class="index-hero__count">{{ len $pages | printf "%02d" }} ENTRIES</span>
+    </div>
+    <p class="index-hero__lead">按时间回看每一个阶段留下的技术切片。</p>
+</section>
+
+<section class="archive archive-timeline section-frame" aria-label="文章时间线">
+    {{ range $pages.GroupByDate "2006" "desc" }}
+        <section class="timeline-year">
+            <header class="timeline-year__header">
+                <span class="mono-label">ARCHIVE / YEAR</span>
+                <h2>{{ .Key }}</h2>
+                <small>{{ len .Pages | printf "%02d" }} ENTRIES</small>
+            </header>
+            <ol class="timeline-items">
+                {{ range .Pages.ByDate.Reverse }}
+                    <li class="timeline-item" data-reveal>
+                        <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ .Date.Format "01.02" }}</time>
+                        <span class="timeline-item__node" aria-hidden="true"></span>
+                        <article class="timeline-item__content">
+                            <div class="timeline-item__meta">
+                                {{ with index (.GetTerms "categories") 0 }}<span class="category-link tone-{{ .Data.Term | urlize }}">{{ .LinkTitle }}</span>{{ end }}
+                                <span>{{ cond (lt .ReadingTime 1) 1 (math.Ceil .ReadingTime) }} MIN READ</span>
+                            </div>
+                            <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+                            {{ with .Description | default (.Summary | plainify) }}
+                                <p>{{ . | truncate 130 }}</p>
+                            {{ end }}
+                        </article>
+                        <a class="timeline-item__arrow" href="{{ .RelPermalink }}" aria-label="阅读：{{ .Title }}">↗</a>
+                    </li>
+                {{ end }}
+            </ol>
+        </section>
+    {{ end }}
+</section>
+{{ end }}

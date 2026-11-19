@@ -1,0 +1,16 @@
+name = "Wayline"
+version = "1.0.0"
+license = "MIT"
+description = "A technical journal theme for paths, systems, and traces."
+min_version = "0.146.0"
+
+[author]
+name = "Soi"
+homepage = "https://ronggle.com"
+
+[features]
+dark_mode = true
+search = true
+giscus = true
+taxonomies = true
+responsive = true

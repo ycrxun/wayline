@@ -1,0 +1,20 @@
+{{ define "main" }}
+<section class="index-hero section-frame">
+    <span class="eyebrow">TAXONOMY / {{ .Data.Singular | upper }}</span>
+    <h1>{{ .Title }}</h1>
+    <p class="index-hero__lead">从一个主题进入，沿着技术、问题与思考的轨迹继续阅读。</p>
+</section>
+
+<section class="topic-overview section-frame">
+    <div class="topic-list">
+        {{ range .Pages.ByTitle }}
+            <a href="{{ .RelPermalink }}" class="topic-row" data-reveal>
+                <span class="topic-row__index">{{ printf "%02d" .Pages.Len }}</span>
+                <span class="topic-row__name">{{ .LinkTitle }}</span>
+                <span class="topic-row__count">{{ .Pages.Len }} ENTRIES</span>
+                <span class="topic-row__arrow">↗</span>
+            </a>
+        {{ end }}
+    </div>
+</section>
+{{ end }}

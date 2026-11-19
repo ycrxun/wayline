@@ -1,0 +1,143 @@
+{{ define "main" }}
+{{- $resume := .Params.resume -}}
+{{- $startYear := $resume.startYear | default 2015 -}}
+{{- $years := sub now.Year $startYear -}}
+{{- $contact := $resume.contact -}}
+
+<article class="resume-page section-frame">
+    <header class="resume-masthead">
+        <div class="resume-masthead__identity">
+            <span class="eyebrow">PROFILE / {{ now.Year }}</span>
+            <h1>{{ $resume.name | default .Title }}</h1>
+            <p class="resume-masthead__role">{{ $resume.role }} · {{ $years }} 年经验</p>
+            <p class="resume-masthead__summary">{{ $resume.summary }}</p>
+        </div>
+        <div class="resume-masthead__meta">
+            <div class="resume-meta-item">
+                <span>LOCATION</span>
+                <strong>{{ $resume.location }}</strong>
+            </div>
+            <div class="resume-meta-item">
+                <span>EXPERIENCE</span>
+                <strong>{{ $years }}+ YEARS</strong>
+            </div>
+            <div class="resume-contact-links">
+                {{ with $contact.phone }}
+                    <button class="contact-reveal" type="button" data-contact="{{ . }}" data-contact-type="tel">电话</button>
+                {{ end }}
+                {{ with $contact.email }}
+                    <button class="contact-reveal" type="button" data-contact="{{ . }}" data-contact-type="email">Email</button>
+                {{ end }}
+                {{ with $contact.github }}
+                    <a href="{{ . }}" target="_blank" rel="noopener me">GitHub ↗</a>
+                {{ end }}
+            </div>
+            <button class="resume-print" type="button" data-print-resume>
+                <span>打印 / 保存 PDF</span>
+                <span aria-hidden="true">↗</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="resume-layout">
+        <aside class="resume-sidebar" aria-label="简历摘要">
+            <section class="resume-sidebar__section resume-sidebar__experience">
+                <span class="mono-label">SINCE {{ $startYear }}</span>
+                <strong>{{ $years }}<sup>+</sup></strong>
+                <p>YEARS IN SOFTWARE</p>
+            </section>
+
+            {{ with $resume.focus }}
+                <section class="resume-sidebar__section">
+                    <h2>重点领域</h2>
+                    <div class="resume-focus">
+                        {{ range . }}<span>{{ . }}</span>{{ end }}
+                    </div>
+                </section>
+            {{ end }}
+
+            {{ with $resume.skills }}
+                <section class="resume-sidebar__section resume-sidebar__skills">
+                    <h2>技术栈</h2>
+                    <div class="resume-skill-groups">
+                        {{ range . }}
+                            <div class="resume-skill-group">
+                                <h3>{{ .group }}</h3>
+                                <p>{{ delimit .items " · " }}</p>
+                            </div>
+                        {{ end }}
+                    </div>
+                </section>
+            {{ end }}
+
+            {{ with $resume.education }}
+                <section class="resume-sidebar__section">
+                    <h2>教育背景</h2>
+                    <p class="resume-education">
+                        {{ .school }}<br>
+                        <span>{{ .major }}</span><br>
+                        <span>{{ .degree }} · 本科</span><br>
+                        <span>{{ .period }}</span>
+                    </p>
+                </section>
+            {{ end }}
+        </aside>
+
+        <div class="resume-main">
+            {{ with $resume.experiences }}
+                <section class="resume-block">
+                    <div class="resume-section-heading">
+                        <span class="section-index">01 / EXPERIENCE</span>
+                        <h2>工作经历</h2>
+                    </div>
+                    <div class="resume-experience-list">
+                        {{ range . }}
+                            <article class="resume-experience">
+                                <div class="resume-experience__time">
+                                    <time>{{ .period }}</time>
+                                    <span>{{ .location }}</span>
+                                </div>
+                                <div class="resume-experience__body">
+                                    <div class="resume-experience__heading">
+                                        <h3>{{ .company }}</h3>
+                                        <span>{{ .role }}</span>
+                                    </div>
+                                    <p>{{ .summary }}</p>
+                                    {{ with .website }}
+                                        <a class="resume-experience__link" href="{{ . }}" target="_blank" rel="noopener">{{ . }} ↗</a>
+                                    {{ end }}
+                                </div>
+                            </article>
+                        {{ end }}
+                    </div>
+                </section>
+            {{ end }}
+
+            {{ with $resume.projects }}
+                <section class="resume-block resume-block--projects">
+                    <div class="resume-section-heading">
+                        <span class="section-index">02 / SELECTED WORK</span>
+                        <h2>代表项目</h2>
+                    </div>
+                    <div class="resume-project-grid">
+                        {{ range . }}
+                            <article class="resume-project">
+                                <header>
+                                    <h3>{{ .name }}</h3>
+                                    <time>{{ .period }}</time>
+                                </header>
+                                <p>{{ .summary }}</p>
+                                {{ with .highlights }}
+                                    <ul>
+                                        {{ range . }}<li>{{ . }}</li>{{ end }}
+                                    </ul>
+                                {{ end }}
+                            </article>
+                        {{ end }}
+                    </div>
+                </section>
+            {{ end }}
+        </div>
+    </div>
+</article>
+{{ end }}

@@ -1,0 +1,20 @@
+<footer class="site-footer">
+    <div class="site-footer__grid">
+        <div class="site-footer__identity">
+            <span class="eyebrow">END OF TRANSMISSION</span>
+            <p>{{ .Site.Title }}</p>
+            <span class="site-footer__tagline">{{ .Site.Params.footer.tagline }}</span>
+        </div>
+        <div class="site-footer__links">
+            {{ range .Site.Params.social }}
+                {{ $url := .url }}
+                {{ if .internal }}{{ $url = .url | relURL }}{{ end }}
+                <a href="{{ $url }}"{{ if not .internal }} target="_blank" rel="noopener me"{{ end }}>{{ .name }} ↗</a>
+            {{ end }}
+        </div>
+    </div>
+    <div class="site-footer__bottom">
+        <span>© {{ .Site.Params.footer.since }}—{{ now.Year }} {{ .Site.Params.author }}</span>
+        <span class="site-footer__status"><i></i> SYSTEM ONLINE</span>
+    </div>
+</footer>

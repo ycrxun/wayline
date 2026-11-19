@@ -1,0 +1,20 @@
+{{ define "main" }}
+{{- $paginator := .Paginate .Pages -}}
+<section class="index-hero section-frame">
+    <a class="back-link" href="{{ relLangURL (printf "%s/" .Data.Plural) }}">← 返回{{ if eq .Data.Plural "categories" }}分类{{ else }}标签{{ end }}</a>
+    <span class="eyebrow">{{ .Data.Singular | upper }} / COLLECTION</span>
+    <div class="index-hero__title-row">
+        <h1>{{ .Title }}</h1>
+        <span class="index-hero__count">{{ len .Pages | printf "%02d" }} ENTRIES</span>
+    </div>
+</section>
+
+<section class="listing section-frame">
+    <div class="article-grid">
+        {{ range $paginator.Pages }}
+            {{ partial "article-card.html" . }}
+        {{ end }}
+    </div>
+    {{ partial "site-pagination.html" $paginator }}
+</section>
+{{ end }}

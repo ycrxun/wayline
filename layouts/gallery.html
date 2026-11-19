@@ -1,0 +1,78 @@
+{{ define "main" }}
+{{- $gallery := .Site.Params.gallery -}}
+{{- $source := $gallery.source | default "posts" -}}
+{{- $limit := $gallery.limit | default 12 -}}
+{{- $pages := where .Site.RegularPages "Section" $source -}}
+{{- $items := slice -}}
+{{- range $pages.ByDate.Reverse -}}
+    {{- $itemPage := . -}}
+    {{- $image := partial "gallery-image.html" $itemPage -}}
+    {{- with $image.thumb -}}
+        {{- $category := "" -}}
+        {{- with index ($itemPage.GetTerms "categories") 0 -}}{{- $category = .LinkTitle -}}{{- end -}}
+        {{- $items = $items | append (dict
+            "page" $itemPage
+            "thumb" $image.thumb
+            "full" $image.full
+            "width" $image.width
+            "height" $image.height
+            "date" ($itemPage.Date.Format "2006.01.02")
+            "category" $category
+        ) -}}
+    {{- end -}}
+{{- end -}}
+{{- $items = first $limit $items -}}
+
+<section class="gallery-hero section-frame">
+    <span class="eyebrow">{{ $gallery.eyebrow | default "VISUAL JOURNAL" }}</span>
+    <div class="gallery-hero__title-row">
+        <h1>{{ $gallery.title | default .Title }}</h1>
+        <span class="index-hero__count">{{ len $items | printf "%02d" }} FRAMES</span>
+    </div>
+    <p class="index-hero__lead">{{ $gallery.description }}</p>
+</section>
+
+<section class="photo-gallery section-frame">
+    {{ if $items }}
+        <div class="photo-feed">
+            {{ range $index, $item := $items }}
+                <button
+                    class="photo-card"
+                    type="button"
+                    data-photo-item
+                    data-photo-src="{{ $item.full }}"
+                    data-photo-title="{{ $item.page.Title }}"
+                    data-photo-meta="{{ $item.date }}{{ with $item.category }} · {{ . }}{{ end }}"
+                    data-photo-description="{{ $item.page.Description | default ($item.page.Summary | plainify) }}"
+                    data-photo-link="{{ $item.page.RelPermalink }}"
+                    data-photo-index="{{ $index }}"
+                    aria-label="查看图片：{{ $item.page.Title }}"
+                >
+                    <figure>
+                        <img
+                            src="{{ $item.thumb }}"
+                            alt="{{ $item.page.Title }}"
+                            {{ with $item.width }}width="{{ . }}"{{ end }}
+                            {{ with $item.height }}height="{{ . }}"{{ end }}
+                            loading="lazy"
+                            decoding="async"
+                        >
+                        <span class="photo-card__shade" aria-hidden="true"></span>
+                        <figcaption>
+                            <span>{{ $item.date }}{{ with $item.category }} · {{ . }}{{ end }}</span>
+                            <strong>{{ $item.page.Title }}</strong>
+                        </figcaption>
+                    </figure>
+                </button>
+            {{ end }}
+        </div>
+    {{ else }}
+        <div class="gallery-empty">
+            <span>NO FRAMES YET</span>
+            <p>影像正在整理中。</p>
+        </div>
+    {{ end }}
+</section>
+
+{{ partial "photo-lightbox.html" . }}
+{{ end }}

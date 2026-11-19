@@ -1,0 +1,51 @@
+<header class="site-header">
+    <div class="site-header__inner">
+        <a class="brand" href="{{ .Site.Home.RelPermalink }}" aria-label="{{ .Site.Title }} 首页">
+            <span class="brand__mark" aria-hidden="true">
+                <span></span><span></span><span></span>
+            </span>
+            <span class="brand__name">{{ .Site.Title }}</span>
+            <span class="brand__index">/01</span>
+        </a>
+
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-navigation">
+            <span class="nav-toggle__label">MENU</span>
+            <span class="nav-toggle__lines" aria-hidden="true"><i></i><i></i></span>
+        </button>
+
+        {{- $menuItems := slice -}}
+        {{- range .Site.Menus.main.ByWeight -}}
+            {{- if or (ne .Identifier "gallery") $.Site.Params.gallery.enabled -}}
+                {{- $menuItems = $menuItems | append . -}}
+            {{- end -}}
+        {{- end -}}
+        <nav class="site-nav" id="site-navigation" aria-label="主导航">
+            {{ range $index, $item := $menuItems }}
+                {{- $label := .Name -}}
+                {{- if eq .Identifier "gallery" -}}
+                    {{- $label = $.Site.Params.gallery.menuTitle | default .Name -}}
+                {{- end -}}
+                {{ $active := or ($.IsMenuCurrent "main" .) (hasPrefix $.RelPermalink .URL) }}
+                <a href="{{ .URL }}"{{ if $active }} class="is-active" aria-current="page"{{ end }}>
+                    <span class="site-nav__index">{{ printf "%02d" (add $index 1) }}</span>
+                    {{ $label }}
+                </a>
+            {{ end }}
+        </nav>
+
+        <button class="theme-toggle" type="button" aria-label="切换配色模式" title="切换配色模式">
+            <svg class="theme-toggle__sun" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"></path>
+            </svg>
+            <svg class="theme-toggle__moon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.5 14.4A8.5 8.5 0 0 1 9.6 3.5 8.5 8.5 0 1 0 20.5 14.4Z"></path>
+            </svg>
+            <svg class="theme-toggle__eye" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"></path>
+                <circle cx="12" cy="12" r="2.7"></circle>
+            </svg>
+            <span class="sr-only">切换配色模式</span>
+        </button>
+    </div>
+</header>

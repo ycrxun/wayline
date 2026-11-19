@@ -1,0 +1,20 @@
+{{- $page := .Page -}}
+{{- $destination := .Destination -}}
+{{- $lookup := path.Base $destination -}}
+{{- $resource := $page.Resources.GetMatch $lookup -}}
+{{- $src := $destination -}}
+{{- $width := "" -}}
+{{- $height := "" -}}
+{{- with $resource -}}
+    {{- $src = .RelPermalink -}}
+    {{- if reflect.IsImageResourceProcessable . -}}
+        {{- $processed := .Fit "1400x1100" -}}
+        {{- $src = $processed.RelPermalink -}}
+        {{- $width = $processed.Width -}}
+        {{- $height = $processed.Height -}}
+    {{- end -}}
+{{- end -}}
+<figure>
+    <img src="{{ $src | safeURL }}" alt="{{ .Text }}" {{ with $width }}width="{{ . }}"{{ end }} {{ with $height }}height="{{ . }}"{{ end }} loading="lazy" decoding="async">
+    {{ with .Title }}<figcaption>{{ . }}</figcaption>{{ end }}
+</figure>

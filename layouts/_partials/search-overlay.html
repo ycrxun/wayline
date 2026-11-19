@@ -1,0 +1,55 @@
+<a
+    class="search-fab"
+    href="{{ relLangURL "search/" }}"
+    data-search-open
+    aria-haspopup="dialog"
+    aria-controls="site-search-dialog"
+    aria-label="搜索文章，快捷键斜杠或 Ctrl+K"
+    title="搜索文章 /"
+>
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="6.5"></circle>
+        <path d="m16 16 4.2 4.2"></path>
+    </svg>
+</a>
+
+<dialog class="site-search" id="site-search-dialog" aria-labelledby="site-search-title">
+    <section class="site-search__panel">
+        <header class="site-search__header">
+            <div>
+                <span class="eyebrow">GLOBAL SEARCH</span>
+                <h2 id="site-search-title">搜索文章</h2>
+            </div>
+            <button class="site-search__close" type="button" data-search-close aria-label="关闭搜索">
+                <span>ESC</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m6 6 12 12M18 6 6 18"></path>
+                </svg>
+            </button>
+        </header>
+
+        <form class="site-search__form" role="search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="6.5"></circle>
+                <path d="m16 16 4.2 4.2"></path>
+            </svg>
+            <input
+                type="search"
+                data-search-dialog-input
+                placeholder="搜索标题、摘要、分类或标签..."
+                autocomplete="off"
+                aria-label="搜索文章"
+            >
+            <span class="site-search__enter" aria-hidden="true">ENTER</span>
+        </form>
+
+        <div class="site-search__status" data-search-dialog-status aria-live="polite"></div>
+        <div class="site-search__results" data-search-dialog-results></div>
+
+        <footer class="site-search__footer">
+            <a href="{{ relLangURL "search/" }}">打开完整搜索页 ↗</a>
+            <span><kbd>/</kbd> 打开 · <kbd>ESC</kbd> 关闭</span>
+        </footer>
+    </section>
+    <span class="site-search__index-url" data-search-index-url="{{ relLangURL "search/index.json" }}" hidden></span>
+</dialog>

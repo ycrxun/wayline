@@ -1,0 +1,24 @@
+<dialog class="photo-lightbox" id="photo-lightbox" aria-label="图片预览">
+    <div class="photo-lightbox__panel">
+        <header class="photo-lightbox__header">
+            <span data-lightbox-counter>01 / 01</span>
+            <button class="photo-lightbox__close" type="button" data-lightbox-close aria-label="关闭图片预览">
+                <span>ESC</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m6 6 12 12M18 6 6 18"></path>
+                </svg>
+            </button>
+        </header>
+        <figure>
+            <img data-lightbox-image src="" alt="">
+            <figcaption>
+                <span data-lightbox-meta></span>
+                <h2 data-lightbox-title></h2>
+                <p data-lightbox-description></p>
+                <a href="#" data-lightbox-link>阅读相关文章 ↗</a>
+            </figcaption>
+        </figure>
+        <button class="photo-lightbox__nav photo-lightbox__nav--prev" type="button" data-lightbox-prev aria-label="上一张">←</button>
+        <button class="photo-lightbox__nav photo-lightbox__nav--next" type="button" data-lightbox-next aria-label="下一张">→</button>
+    </div>
+</dialog>

@@ -1,0 +1,78 @@
+{{- $title := .Site.Title -}}
+{{- if not .IsHome -}}
+    {{- $pageTitle := .Title -}}
+    {{- if and (eq .Kind "section") (eq .Section "posts") -}}
+        {{- $pageTitle = "全部文章" -}}
+    {{- end -}}
+    {{- $title = printf "%s · %s" $pageTitle .Site.Title -}}
+{{- end -}}
+{{- $description := .Site.Params.description -}}
+{{- with .Description -}}
+    {{- $description = . -}}
+{{- else -}}
+    {{- if and (eq .Kind "page") (ne .Section "page") -}}
+        {{- $description = .Summary | plainify | truncate 155 "" -}}
+    {{- end -}}
+{{- end -}}
+{{- $cover := partial "cover.html" . -}}
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0c1117">
+<meta name="generator" content="Hugo {{ hugo.Version }}">
+<title>{{ $title }}</title>
+<meta name="description" content="{{ $description }}">
+{{ with .Site.Params.keywords }}<meta name="keywords" content="{{ delimit . ", " }}">{{ end }}
+<link rel="canonical" href="{{ .Permalink }}">
+<link rel="preload" href="/fonts/space-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/noto-sans-sc-regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/lxgw-wenkai-medium.woff2" as="font" type="font/woff2" crossorigin>
+
+<script>
+    (() => {
+        const saved = localStorage.getItem("wayline-theme");
+        const legacy = localStorage.getItem("ronggle-theme");
+        const preferred = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        const theme = saved || legacy || preferred;
+        document.documentElement.dataset.theme = theme;
+        if (!saved && legacy) {
+            localStorage.setItem("wayline-theme", legacy);
+            localStorage.removeItem("ronggle-theme");
+        }
+    })();
+</script>
+
+{{ $css := resources.Get "css/main.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+{{ with resources.Get "favicon.ico" }}
+    <link rel="icon" href="{{ .RelPermalink }}">
+{{ end }}
+{{ range .AlternativeOutputFormats }}
+    <link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" href="{{ .Permalink | safeURL }}">
+{{ end }}
+
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:description" content="{{ $description }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:site_name" content="{{ .Site.Title }}">
+{{ with $cover.url }}<meta property="og:image" content="{{ . | absURL }}">{{ end }}
+<meta name="twitter:card" content="{{ if $cover.url }}summary_large_image{{ else }}summary{{ end }}">
+<meta name="twitter:title" content="{{ $title }}">
+<meta name="twitter:description" content="{{ $description }}">
+
+{{ $schemaType := cond .IsHome "WebSite" "BlogPosting" }}
+{{ $schema := dict
+    "@context" "https://schema.org"
+    "@type" $schemaType
+    "name" $title
+    "headline" (cond .IsHome .Site.Title .Title)
+    "description" $description
+    "url" .Permalink
+    "author" (dict "@type" "Person" "name" (.Site.Params.author | default .Site.Title))
+}}
+{{ if .IsPage }}
+    {{ $schema = merge $schema (dict "datePublished" (.Date.Format "2006-01-02T15:04:05Z07:00") "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00")) }}
+{{ end }}
+<script type="application/ld+json">{{ $schema | jsonify | safeJS }}</script>

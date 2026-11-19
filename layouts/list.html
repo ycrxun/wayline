@@ -1,0 +1,25 @@
+{{ define "main" }}
+{{- $pages := .Pages -}}
+{{- if .IsHome }}{{ $pages = where .Site.RegularPages "Section" "posts" }}{{ end -}}
+{{- $paginator := .Paginate $pages -}}
+{{- $pageTitle := .Title -}}
+{{- if and (eq .Kind "section") (eq .Section "posts") }}{{ $pageTitle = "全部文章" }}{{ end -}}
+
+<section class="index-hero section-frame">
+    <span class="eyebrow">WRITING ARCHIVE</span>
+    <div class="index-hero__title-row">
+        <h1>{{ $pageTitle }}</h1>
+        <span class="index-hero__count">{{ len $pages | printf "%02d" }} ENTRIES</span>
+    </div>
+    {{ with .Content }}<div class="index-hero__intro prose">{{ . }}</div>{{ end }}
+</section>
+
+<section class="listing section-frame">
+    <div class="article-grid">
+        {{ range $paginator.Pages }}
+            {{ partial "article-card.html" . }}
+        {{ end }}
+    </div>
+    {{ partial "site-pagination.html" $paginator }}
+</section>
+{{ end }}

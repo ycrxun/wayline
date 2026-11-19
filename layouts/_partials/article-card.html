@@ -1,0 +1,36 @@
+{{- $page := . -}}
+{{- $cover := partial "cover.html" . -}}
+{{- $category := "" -}}
+{{- with index (.GetTerms "categories") 0 -}}
+    {{- $category = . -}}
+{{- end -}}
+
+<article class="article-card{{ if $cover.url }} article-card--with-image{{ end }}" data-reveal>
+    {{ with $cover.url }}
+        <a class="article-card__media" href="{{ $page.RelPermalink }}" tabindex="-1" aria-hidden="true">
+            <img
+                src="{{ . }}"
+                alt=""
+                {{ with $cover.width }}width="{{ . }}"{{ end }}
+                {{ with $cover.height }}height="{{ . }}"{{ end }}
+                loading="lazy"
+                decoding="async"
+            >
+            <span class="article-card__media-index">READ / {{ $page.Date.Format "2006" }}</span>
+        </a>
+    {{ end }}
+    <div class="article-card__body">
+        <div class="article-card__meta">
+            {{ with $category }}<a class="category-link tone-{{ .Data.Term | urlize }}" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}
+            <time datetime="{{ $page.Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ $page.Date.Format "2006.01.02" }}</time>
+        </div>
+        <h2 class="article-card__title"><a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a></h2>
+        {{ with $page.Description | default ($page.Summary | plainify) }}
+            <p class="article-card__summary">{{ . | truncate 120 }}</p>
+        {{ end }}
+        <div class="article-card__footer">
+            <span>{{ cond (lt $page.ReadingTime 1) 1 (math.Ceil $page.ReadingTime) }} MIN READ</span>
+            <a class="arrow-link" href="{{ $page.RelPermalink }}" aria-label="阅读：{{ $page.Title }}">进入阅读 <span>↗</span></a>
+        </div>
+    </div>
+</article>

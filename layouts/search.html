@@ -1,0 +1,21 @@
+{{ define "main" }}
+{{- $json := .OutputFormats.Get "json" -}}
+<section class="index-hero section-frame">
+    <span class="eyebrow">QUERY INTERFACE</span>
+    <h1>{{ .Title }}</h1>
+    <p class="index-hero__lead">输入文章标题、摘要、分类或标签。</p>
+</section>
+
+<section class="search-page section-frame" data-search-page data-search-json="{{ with $json }}{{ .RelPermalink }}{{ end }}">
+    <form class="search-box js-search-form" role="search">
+        <label for="search-input">SEARCH THE ARCHIVE</label>
+        <div class="search-box__field">
+            <span aria-hidden="true">⌕</span>
+            <input id="search-input" type="search" name="q" autocomplete="off" placeholder="输入关键词，例如 Docker、微服务、回忆" aria-label="搜索关键词">
+            <kbd>/</kbd>
+        </div>
+    </form>
+    <div class="search-status" aria-live="polite"></div>
+    <div class="search-results"></div>
+</section>
+{{ end }}
